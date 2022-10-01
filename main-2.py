@@ -70,7 +70,6 @@ class Dots_and_Boxes:
 
     def mainloop(self):
         self.window.mainloop()
-        print(self.turntext_handle)
         self.f.write(str(self.board_status) + "\n")
         self.f.write(str(self.row_status) + "\n")
         self.f.write(str(self.col_status) + "\n")

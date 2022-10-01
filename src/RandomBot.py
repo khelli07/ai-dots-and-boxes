@@ -2,16 +2,13 @@ import random
 
 import numpy as np
 
-from Bot import Bot
-from GameAction import GameAction
-from GameState import GameState
+from src.Bot import Bot
+from src.GameAction import GameAction
+from src.GameState import GameState
 
 
 class RandomBot(Bot):
     def get_action(self, state: GameState) -> GameAction:
-        print(state.board_status)
-        print(state.row_status)
-        print(state.col_status)
         all_row_marked = np.all(state.row_status == 1)
         all_col_marked = np.all(state.col_status == 1)
 
@@ -30,7 +27,6 @@ class RandomBot(Bot):
 
     def get_random_row_action(self, state: GameState) -> GameAction:
         position = self.get_random_position_with_zero_value(state.row_status)
-        print(f"row {position}")
         return GameAction("row", position)
 
     def get_random_position_with_zero_value(self, matrix: np.ndarray):
@@ -49,8 +45,7 @@ class RandomBot(Bot):
 
     def get_random_col_action(self, state: GameState) -> GameAction:
         position = self.get_random_position_with_zero_value(state.col_status)
-        print(f"col {position}")
         return GameAction("col", position)
 
-    def count_chain(self, state):
+    def heuristic(self, state):
         pass

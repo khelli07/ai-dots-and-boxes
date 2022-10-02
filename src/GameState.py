@@ -28,3 +28,27 @@ class GameState(NamedTuple):
     row_status: ndarray
     col_status: ndarray
     player1_turn: bool
+
+    # KALAU GILIRAN BOT, TURN ISI TRUE
+    # KALAU GILIRAN HUMAN, ISI FALSE AJA
+    def State_Value(self,turn):
+
+        # WEIGHT
+        c1 = 2
+        c2 = 3
+
+        #ALGORITHM
+        my_square = 0
+        opponent_square = 0
+        almost_square = 0
+        for i in self.board_status :
+            for j in i :
+                if abs(j) == 3:
+                    almost_square += 1
+                elif j == 4:
+                    my_square += 1
+                elif j == -4:
+                    opponent_square += 1
+
+        return c1*(my_square - opponent_square) + c2*almost_square if turn else c1*(my_square - opponent_square) - c2*almost_square
+

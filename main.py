@@ -104,6 +104,11 @@ class Dots_and_Boxes:
             logical_position = [x, y]
             type = "col"
 
+        # PGN CARI TAU CARA MEREKA NYIMPEN POSISI
+        # print("Position",position)
+        # print("Grid pos",grid_position)
+        # TERNYATA MISAL (X,Y) itu X ke kanan Y ke bawah
+
         return logical_position, type
 
     def pointScored(self):
@@ -348,6 +353,18 @@ class Dots_and_Boxes:
             self.make_edge(valid_input, logical_position)
             self.mark_box()
             self.refresh_board()
+            # temp =  GameState(
+            #         self.board_status.copy(),
+            #         self.row_status.copy(),
+            #         self.col_status.copy(),
+            #         self.player1_turn,
+            #     )
+
+            # if self.player1_turn: 
+            #     print("STATE SETELAH GERAKNYA KITA", temp.State_Value(True)) #berarti giliran bot
+            # else:
+            #     print("STATE SETELAH GERAKNYA BOT", temp.State_Value(False)) #berarti giliran human
+
             self.player1_turn = (
                 (not self.player1_turn) if not self.pointsScored else self.player1_turn
             )

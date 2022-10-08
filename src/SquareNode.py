@@ -1,7 +1,7 @@
 import typing
 
-from GameAction import GameAction
-from GameState import GameState
+from src.GameAction import GameAction
+from src.GameState import GameState
 
 
 class SquareNode(GameState):

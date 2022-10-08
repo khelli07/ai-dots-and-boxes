@@ -321,24 +321,6 @@ class Dots_and_Boxes:
                     outline=dot_color,
                 )
 
-    def display_turn_text(self):
-        text = "Next turn: "
-        if self.player1_turn:
-            text += "Player1"
-            color = player1_color
-        else:
-            text += "Player2"
-            color = player2_color
-
-        self.canvas.delete(self.turntext_handle)
-        self.turntext_handle = self.canvas.create_text(
-            size_of_board - 5 * len(text),
-            size_of_board - distance_between_dots / 8,
-            font="cmr 15 bold",
-            text=text,
-            fill=color,
-        )
-
     def shade_box(self, box, color):
         start_x = (
             distance_between_dots / 2 + box[1] * distance_between_dots + edge_width / 2

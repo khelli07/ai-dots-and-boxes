@@ -74,3 +74,10 @@ class GameState:
         AgentTurn = True if (player == 2 and not self.player1_turn) or (player == 1 and self.player1_turn) else False
 
         return square_score + almost_score if AgentTurn else square_score - almost_score
+
+    def terminal_test(self) -> bool:
+        for i in self.board_status:
+            for j in i:
+                if abs(j) != 4:
+                    return False
+        return True

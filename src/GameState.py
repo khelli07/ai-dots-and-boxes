@@ -40,7 +40,7 @@ class GameState:
     # Asumsi sekarang: agent: turn = False
     #                  enemy: turn = True
 
-    def state_value(self, turn):
+    def state_value(self, turn, player=2):
 
         # WEIGHT
         c1 = 2
@@ -55,9 +55,15 @@ class GameState:
                 if abs(j) == 3:
                     almost_square += 1
                 elif j == 4:
-                    my_square += 1
+                    if player == 2: 
+                        my_square += 1 
+                    else :
+                        opponent_square += 1
                 elif j == -4:
-                    opponent_square += 1
+                    if player == 2:
+                        opponent_square += 1
+                    else :
+                        my_square += 1 
 
         square_score = c1 * (my_square - opponent_square)
         almost_score = c2 * almost_square

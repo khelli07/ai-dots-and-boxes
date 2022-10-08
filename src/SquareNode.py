@@ -1,20 +1,20 @@
 import typing
 
-from src.GameAction import GameAction
-from src.GameState import GameState
+from GameAction import GameAction
+from GameState import GameState
 
 
 class SquareNode(GameState):
     """
-    Helps to return best child of a node if agent has > 1 move
-    e.g. if agent made a square
+    Helps to return best child of a node if agent/enemy has > 1 move
+    e.g. if agent/enemy made a square
 
     Usage:
     root = SquareNode(board_status, row_status, col_status, None)
-    best_child = root.generate_best_child()
+    best_child = root.generate_best_child(is_enemy=False)
 
-    best_child will return SquareNode which has an attribute moves
-    moves will be a list of GameAction to be taken by agent to reach best_child
+    best_child will return SquareNode which has an attribute called "moves"
+    "moves" will be a list of GameAction to be taken by agent/enemy to reach best_child
     """
 
     def __init__(
@@ -28,18 +28,23 @@ class SquareNode(GameState):
         else:
             self.moves = parent.moves + [move]
 
-    def generate_best_child(self):
+    def generate_best_child(self, is_enemy=False):
         last_best = best_child = SquareNode.generate_square_moves(self)
         if last_best.children:
             max_score, best_child = (
-                last_best.children[0].state_value(False),
+                last_best.children[0].state_value(is_enemy),
                 last_best.children[0],
             )
             for child in last_best.children:
-                score = child.state_value(False)
-                if score > max_score:
-                    max_score = score
-                    best_child = child
+                score = child.state_value(is_enemy)
+                if not is_enemy:
+                    if score > max_score:
+                        max_score = score
+                        best_child = child
+                else:
+                    if score < max_score:
+                        max_score = score
+                        best_child = child
 
         return best_child
 
@@ -99,23 +104,35 @@ class SquareNode(GameState):
         self.children = no_new_square
         return False
 
-    def update(self, x, y, is_row):
-        is_square_created = False
+    def update(self, x, y, is_row, is_enemy=False):
+        val = 1
+        playerModifier = 1
+        if not is_enemy:
+            playerModifier = -1
 
+        is_square_created = False
         if y < 3 and x < 3:
-            self.board_status[y][x] = abs(self.board_status[y][x]) + 1
+            self.board_status[y][x] = (
+                abs(self.board_status[y][x]) + val
+            ) * playerModifier
+            if abs(self.board_status[y][x]) == 4:
+                is_square_created = True
 
         if is_row:
             self.row_status[y][x] = 1
             if y >= 1:
-                self.board_status[y - 1][x] = abs(self.board_status[y - 1][x]) + 1
+                self.board_status[y - 1][x] = (
+                    abs(self.board_status[y - 1][x]) + val
+                ) * playerModifier
                 if abs(self.board_status[y - 1][x]) == 4:
                     is_square_created = True
 
         else:
             self.col_status[y][x] = 1
             if x >= 1:
-                self.board_status[y][x - 1] = abs(self.board_status[y][x - 1]) + 1
+                self.board_status[y][x - 1] = (
+                    abs(self.board_status[y][x - 1]) + val
+                ) * playerModifier
                 if abs(self.board_status[y][x - 1]) == 4:
                     is_square_created = True
 
@@ -135,7 +152,7 @@ class SquareNode(GameState):
 # col_status = np.array([[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 1, 1]])
 
 # root = SquareNode(board_status, row_status, col_status, None)
-# best_child = root.generate_best_child()
+# best_child = root.generate_best_child(False)
 # print(best_child.moves)
 # print(best_child.board_status)
 # print(best_child.row_status)

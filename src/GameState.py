@@ -35,6 +35,11 @@ class GameState:
 
     # KALAU GILIRAN BOT, TURN ISI TRUE
     # KALAU GILIRAN HUMAN, ISI FALSE AJA
+
+    # Note (khelli)
+    # Asumsi sekarang: agent: turn = False
+    #                  enemy: turn = True
+
     def state_value(self, turn):
 
         # WEIGHT

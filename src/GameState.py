@@ -1,9 +1,7 @@
-from typing import NamedTuple
-
 from numpy import ndarray
 
 
-class GameState(NamedTuple):
+class GameState:
     """
     board_status: int[][]
         For each element, if its absolute element is four, then
@@ -29,20 +27,26 @@ class GameState(NamedTuple):
     col_status: ndarray
     player1_turn: bool
 
+    def __init__(self, board_status, row_status, col_status, player1_turn):
+        self.board_status = board_status
+        self.row_status = row_status
+        self.col_status = col_status
+        self.player1_turn = player1_turn
+
     # KALAU GILIRAN BOT, TURN ISI TRUE
     # KALAU GILIRAN HUMAN, ISI FALSE AJA
-    def State_Value(self,turn):
+    def state_value(self, turn):
 
         # WEIGHT
         c1 = 2
         c2 = 3
 
-        #ALGORITHM
+        # ALGORITHM
         my_square = 0
         opponent_square = 0
         almost_square = 0
-        for i in self.board_status :
-            for j in i :
+        for i in self.board_status:
+            for j in i:
                 if abs(j) == 3:
                     almost_square += 1
                 elif j == 4:
@@ -50,5 +54,6 @@ class GameState(NamedTuple):
                 elif j == -4:
                     opponent_square += 1
 
-        return c1*(my_square - opponent_square) + c2*almost_square if turn else c1*(my_square - opponent_square) - c2*almost_square
-
+        square_score = c1 * (my_square - opponent_square)
+        almost_score = c2 * almost_square
+        return square_score + almost_score if turn else square_score - almost_score

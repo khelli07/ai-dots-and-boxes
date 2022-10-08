@@ -8,9 +8,9 @@ from typing import Optional
 
 import numpy as np
 
-from Bot import Bot
-from GameState import GameState
-from RandomBot import RandomBot
+from src.Bot import Bot
+from src.GameState import GameState
+from src.RandomBot import RandomBot
 
 size_of_board = 600
 number_of_dots = 4
@@ -360,10 +360,10 @@ class Dots_and_Boxes:
             #         self.player1_turn,
             #     )
 
-            # if self.player1_turn: 
-            #     print("STATE SETELAH GERAKNYA KITA", temp.State_Value(True)) #berarti giliran bot
+            # if self.player1_turn:
+            #     print("STATE SETELAH GERAKNYA KITA", temp.state_value(True)) #berarti giliran bot
             # else:
-            #     print("STATE SETELAH GERAKNYA BOT", temp.State_Value(False)) #berarti giliran human
+            #     print("STATE SETELAH GERAKNYA BOT", temp.state_value(False)) #berarti giliran human
 
             self.player1_turn = (
                 (not self.player1_turn) if not self.pointsScored else self.player1_turn

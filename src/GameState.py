@@ -40,11 +40,13 @@ class GameState:
     # Asumsi sekarang: agent: turn = False
     #                  enemy: turn = True
 
-    def state_value(self, turn):
+    # Asumsinya kayan
+
+    def state_value(self, player=2):
 
         # WEIGHT
-        c1 = 2
-        c2 = 3
+        c1 = 10
+        c2 = 10
 
         # ALGORITHM
         my_square = 0
@@ -55,10 +57,27 @@ class GameState:
                 if abs(j) == 3:
                     almost_square += 1
                 elif j == 4:
-                    my_square += 1
+                    if player == 2: 
+                        my_square += 1 
+                    else :
+                        opponent_square += 1
                 elif j == -4:
-                    opponent_square += 1
+                    if player == 2:
+                        opponent_square += 1
+                    else :
+                        my_square += 1 
 
         square_score = c1 * (my_square - opponent_square)
         almost_score = c2 * almost_square
-        return square_score + almost_score if turn else square_score - almost_score
+
+        #Cek apakah turn nya agent atau bukan
+        AgentTurn = True if (player == 2 and not self.player1_turn) or (player == 1 and self.player1_turn) else False
+
+        return square_score + almost_score if AgentTurn else square_score - almost_score
+
+    def terminal_test(self) -> bool:
+        for i in self.board_status:
+            for j in i:
+                if abs(j) != 4:
+                    return False
+        return True

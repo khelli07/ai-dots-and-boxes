@@ -1,5 +1,5 @@
-from GameAction import GameAction
-from Node import Node
+from src.GameAction import GameAction
+from src.Node import Node
 
 
 class SquareNode(Node):

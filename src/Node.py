@@ -33,6 +33,7 @@ class Node(GameState):
                         GameAction("row", (i, j)),
                         self,
                     )
+                    new_row.update(i, j, True)
                     self.children.append(new_row)
 
                 if self.col_status[i][j] != 1:
@@ -43,14 +44,15 @@ class Node(GameState):
                         GameAction("col", (j, i)),
                         self,
                     )
+                    new_col.update(j, i, False)
                     self.children.append(new_col)
 
         return self.children != []
 
-    def update(self, x, y, is_row, is_enemy=False):
+    def update(self, x, y, is_row):
         val = 1
         playerModifier = 1
-        if not is_enemy:
+        if self.player1_turn:
             playerModifier = -1
 
         is_square_created = False

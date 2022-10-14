@@ -105,8 +105,13 @@ class SquareNode(Node):
 # row_status = np.array([[0, 0, 1], [0, 0, 0], [0, 0, 0], [0, 0, 1]])
 # col_status = np.array([[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 1, 1]])
 
+# CASE 3: initial  game
+# board_status = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+# row_status = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]])
+# col_status = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
+
 # root = SquareNode(board_status, row_status, col_status, None)
-# best_child = root.generate_best_child(False)
+# best_child = root.generate_best_child()
 # print(best_child.moves)
 # print(best_child.board_status)
 # print(best_child.row_status)

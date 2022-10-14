@@ -1,10 +1,8 @@
-import typing
-
 from GameAction import GameAction
-from GameState import GameState
+from Node import Node
 
 
-class SquareNode(GameState):
+class SquareNode(Node):
     """
     Helps to return best child of a node if agent/enemy has > 1 move
     e.g. if agent/enemy made a square
@@ -17,18 +15,8 @@ class SquareNode(GameState):
     "moves" will be a list of GameAction to be taken by agent/enemy to reach best_child
     """
 
-    def __init__(
-        self, board_status, row_status, col_status, move: GameAction, parent=None
-    ):
-        super().__init__(board_status, row_status, col_status, True)
-        self.parent = parent
-        self.children: typing.List[SquareNode] = []
-        if parent is None:
-            self.moves = [move]
-        else:
-            self.moves = parent.moves + [move]
-
-    def generate_best_child(self, is_enemy=False):
+    def generate_best_child(self):
+        is_enemy = not self.player1_turn
         last_best = best_child = SquareNode.generate_square_moves(self)
         if last_best.children:
             max_score, best_child = (
@@ -103,40 +91,6 @@ class SquareNode(GameState):
 
         self.children = no_new_square
         return False
-
-    def update(self, x, y, is_row, is_enemy=False):
-        val = 1
-        playerModifier = 1
-        if not is_enemy:
-            playerModifier = -1
-
-        is_square_created = False
-        if y < 3 and x < 3:
-            self.board_status[y][x] = (
-                abs(self.board_status[y][x]) + val
-            ) * playerModifier
-            if abs(self.board_status[y][x]) == 4:
-                is_square_created = True
-
-        if is_row:
-            self.row_status[y][x] = 1
-            if y >= 1:
-                self.board_status[y - 1][x] = (
-                    abs(self.board_status[y - 1][x]) + val
-                ) * playerModifier
-                if abs(self.board_status[y - 1][x]) == 4:
-                    is_square_created = True
-
-        else:
-            self.col_status[y][x] = 1
-            if x >= 1:
-                self.board_status[y][x - 1] = (
-                    abs(self.board_status[y][x - 1]) + val
-                ) * playerModifier
-                if abs(self.board_status[y][x - 1]) == 4:
-                    is_square_created = True
-
-        return is_square_created
 
 
 # import numpy as np

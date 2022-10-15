@@ -10,7 +10,7 @@ class ChildrenNode:
         self.turn = turn
         self.newSquare : list[bool] = []
 
-    def generate_children(self):
+    def generate_children(self, turn = 2):
         for i in range(3):
             for j in range(4):
                 if self.state.row_status[j][i] != 1:
@@ -26,11 +26,19 @@ class ChildrenNode:
                     if j != 0:
                         if self.state.row_status[j-1][i] == 1 and self.state.col_status[j-1][i] == 1 and self.state.col_status[j-1][i+1] == 1:
                             kotakbaru = True
+                            if turn == 2:
+                                self.state.board_status[j-1][i] = (abs(self.state.board_status[j-1][i]))+1
+                            else : 
+                                self.state.board_status[j-1][i] = -1*((abs(self.state.board_status[j-1][i]))+1)
 
                     #CEK BAWAHNYA TERBENTUK KOTAK APA ENGGA
                     if j != 3:
                         if self.state.row_status[j+1][i] == 1 and self.state.col_status[j][i] == 1 and self.state.col_status[j][i+1] == 1:
                             kotakbaru = True
+                            if turn == 2:
+                                self.state.board_status[j][i] = (abs(self.state.board_status[j][i]))+1
+                            else : 
+                                self.state.board_status[j][i] = -1*((abs(self.state.board_status[j][i]))+1)
 
                     self.children.append(newChild)
                     self.moves.append(GameAction("row", (i,j)))
@@ -49,11 +57,19 @@ class ChildrenNode:
                     if j != 0:
                         if self.state.col_status[i][j-1] == 1 and self.state.row_status[i][j-1] == 1 and self.state.row_status[i+1][j-1] == 1:
                             kotakbaru = True
+                            if turn == 2:
+                                self.state.board_status[i][j-1] = (abs(self.state.board_status[i][j-1]))+1
+                            else : 
+                                self.state.board_status[i][j-1] = -1*((abs(self.state.board_status[i][j-1]))+1)
 
                     #CEK KANAN TERBENTUK KOTAK APA ENGGA
                     if j != 3:
                         if self.state.col_status[i][j+1] == 1 and self.state.row_status[i][j] == 1 and self.state.row_status[i+1][j] == 1:
                             kotakbaru = True
+                            if turn == 2:
+                                self.state.board_status[i][j] = (abs(self.state.board_status[i][j]))+1
+                            else : 
+                                self.state.board_status[i][j] = -1*((abs(self.state.board_status[i][j]))+1)
 
                     self.children.append(newChild)
                     self.moves.append(GameAction("col", (j,i)))

@@ -10,7 +10,6 @@ class MinimaxBot(Bot):
         AgentTurn = True if (player == 2 and not state.player1_turn) or (player == 1 and state.player1_turn) else False
         
         _, action = MinimaxBot.minimax(state, AgentTurn, 4, -999999999, 99999999)
-        print(state, "\n",action)
         return action
 
     @staticmethod

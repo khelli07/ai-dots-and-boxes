@@ -13,6 +13,7 @@ from src.GameState import GameState
 from src.Minimax import MinimaxBot
 from src.LocalSearchBot import LocalSearchBot
 from src.LocalSearch import LocalSearch
+from src.RandomBot import RandomBot
 from time import sleep
 
 size_of_board = 600
@@ -384,5 +385,5 @@ class Dots_and_Boxes:
 
 
 if __name__ == "__main__":
-    game_instance = Dots_and_Boxes(None, MinimaxBot())
+    game_instance = Dots_and_Boxes(RandomBot(), MinimaxBot())
     game_instance.mainloop()

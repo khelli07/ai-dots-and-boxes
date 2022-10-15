@@ -47,7 +47,7 @@ class GameState:
     def state_value(self):
 
         # WEIGHT
-        c1 = 25
+        c1 = 35
         c2 = 10
 
         # ALGORITHM
@@ -66,10 +66,8 @@ class GameState:
         square_score = c1 * (red_square - blue_square)
         almost_score = c2 * almost_square
 
-        # KASUS :
-        # 1. Sekarang giliran player1. Maka 3/4 square bakal membantu player 1 --> Semakin negatif
-        # 2. Sekarang giliran player2. Maka 3/4 square bakal membantu player 2 --> Semakin positif
-        return square_score + almost_score if not self.player1_turn else square_score - almost_score
+        result = square_score + almost_score if not self.player1_turn else square_score - almost_score
+        return result
 
     def terminal_test(self) -> bool:
         for i in self.board_status:

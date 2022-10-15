@@ -345,10 +345,8 @@ class Dots_and_Boxes:
             #         self.player1_turn,
             #     )
 
-            # if self.player1_turn:
-            #     print("STATE SETELAH GERAKNYA KITA", temp.state_value(True)) #berarti giliran bot
-            # else:
-            #     print("STATE SETELAH GERAKNYA BOT", temp.state_value(False)) #berarti giliran human
+            # print("Colstat :\n", self.col_status) 
+            # print("Rowstat :\n", self.row_status) 
 
             # sleep(1)
 

@@ -14,7 +14,9 @@ class SquareNode(Node):
     best_child will return SquareNode which has an attribute called "moves"
     "moves" will be a list of GameAction to be taken by agent/enemy to reach best_child
     """
-
+    # Note Saul:
+    # aku mencoba mensinkronkan sama statevalue dan minimax biar ga ketuker,
+    # jadinya isEnemy = player2 yang menangnya kalau semakin positif, player1 menangnya kalo semakin negatif
     def generate_best_child(self):
         is_enemy = not self.player1_turn
         last_best = best_child = SquareNode.generate_square_moves(self)
@@ -25,7 +27,7 @@ class SquareNode(Node):
             )
             for child in last_best.children:
                 score = child.state_value()
-                if not is_enemy:
+                if is_enemy:
                     if score > max_score:
                         max_score = score
                         best_child = child

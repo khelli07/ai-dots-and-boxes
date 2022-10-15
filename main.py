@@ -10,7 +10,10 @@ import numpy as np
 
 from src.Bot import Bot
 from src.GameState import GameState
-from src.RandomBot import RandomBot
+from src.Minimax import MinimaxBot
+from src.LocalSearchBot import LocalSearchBot
+from src.LocalSearch import LocalSearch
+from time import sleep
 
 size_of_board = 600
 number_of_dots = 4
@@ -347,6 +350,8 @@ class Dots_and_Boxes:
             # else:
             #     print("STATE SETELAH GERAKNYA BOT", temp.state_value(False)) #berarti giliran human
 
+            # sleep(1)
+
             self.player1_turn = (
                 (not self.player1_turn) if not self.pointsScored else self.player1_turn
             )
@@ -381,5 +386,5 @@ class Dots_and_Boxes:
 
 
 if __name__ == "__main__":
-    game_instance = Dots_and_Boxes(None, RandomBot())
+    game_instance = Dots_and_Boxes(None, MinimaxBot())
     game_instance.mainloop()

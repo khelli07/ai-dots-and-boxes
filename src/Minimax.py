@@ -9,14 +9,14 @@ class MinimaxBot(Bot):
         # TODO gimana cara masukin agent sebagai player berapa
         Turn = True if player == 2 else False
         
-        score, action = MinimaxBot.minimax(state, Turn, 4, -999999999, 99999999)
-        print(score)
+        _, action = MinimaxBot.minimax(state, Turn, 4, -999999999, 99999999)
+
         return action
 
     @staticmethod
     def minimax(state: GameState, turn: bool, depth: int, alpha: int, beta:int) -> tuple[int, GameAction]:
         if depth == 0 or state.terminal_test()==True:
-            return (state.state_value(turn),GameAction("row", (-1,-1)))
+            return (state.state_value(),GameAction("row", (-1,-1)))
         
         bestScore: int = -1
         bestMove: GameAction = GameAction("row", (-1,-1))

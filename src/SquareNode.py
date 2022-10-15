@@ -20,11 +20,11 @@ class SquareNode(Node):
         last_best = best_child = SquareNode.generate_square_moves(self)
         if last_best.children:
             max_score, best_child = (
-                last_best.children[0].state_value(is_enemy),
+                last_best.children[0].state_value(),
                 last_best.children[0],
             )
             for child in last_best.children:
-                score = child.state_value(is_enemy)
+                score = child.state_value()
                 if not is_enemy:
                     if score > max_score:
                         max_score = score

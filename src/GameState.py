@@ -40,40 +40,36 @@ class GameState:
     # Asumsi sekarang: agent: turn = False
     #                  enemy: turn = True
 
-    # Asumsinya kayan
+    # HM aku baru kepikiran ternyata konvensinya lebih mudah kalau pakai pendekatan yang kaya di board status
+    # Semakin positif statenya, semakin membantu Player2 dan semakin negatif, membantu player 1
+    # Jadi buat algo minmax sama local search, kalau sbg player2 ambil child terbesarnya kalau sbg player1 ambil terkecilnya
 
-    def state_value(self, player=2):
+    def state_value(self):
 
         # WEIGHT
         c1 = 25
         c2 = 10
 
         # ALGORITHM
-        my_square = 0
-        opponent_square = 0
+        red_square = 0
+        blue_square = 0
         almost_square = 0
         for i in self.board_status:
             for j in i:
                 if abs(j) == 3:
                     almost_square += 1
                 elif j == 4:
-                    if player == 2: 
-                        my_square += 1 
-                    else :
-                        opponent_square += 1
+                    red_square += 1
                 elif j == -4:
-                    if player == 2:
-                        opponent_square += 1
-                    else :
-                        my_square += 1 
+                    blue_square += 1
 
-        square_score = c1 * (my_square - opponent_square)
+        square_score = c1 * (red_square - blue_square)
         almost_score = c2 * almost_square
 
-        #Cek apakah turn nya agent atau bukan
-        AgentTurn = True if (player == 2 and not self.player1_turn) or (player == 1 and self.player1_turn) else False
-
-        return square_score + almost_score if AgentTurn else square_score - almost_score
+        # KASUS :
+        # 1. Sekarang giliran player1. Maka 3/4 square bakal membantu player 1 --> Semakin negatif
+        # 2. Sekarang giliran player2. Maka 3/4 square bakal membantu player 2 --> Semakin positif
+        return square_score + almost_score if not self.player1_turn else square_score - almost_score
 
     def terminal_test(self) -> bool:
         for i in self.board_status:

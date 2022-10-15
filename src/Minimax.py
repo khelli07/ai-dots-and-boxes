@@ -7,9 +7,10 @@ from src.SquareNode import SquareNode
 class MinimaxBot(Bot):
     def get_action(self, state: GameState, player=2) -> GameAction:
         # TODO gimana cara masukin agent sebagai player berapa
-        AgentTurn = True if (player == 2 and not state.player1_turn) or (player == 1 and state.player1_turn) else False
+        Turn = True if player == 2 else False
         
-        _, action = MinimaxBot.minimax(state, AgentTurn, 4, -999999999, 99999999)
+        score, action = MinimaxBot.minimax(state, Turn, 4, -999999999, 99999999)
+        print(score)
         return action
 
     @staticmethod
@@ -20,34 +21,34 @@ class MinimaxBot(Bot):
         bestScore: int = -1
         bestMove: GameAction = GameAction("row", (-1,-1))
 
-        if turn==False:
-            # Giliran agent
+        if turn==True: # BERARTI INI MAXIMIZING YA ?
+            # Giliran Player 2
             children, moves, newSquare = ChildrenNode(state, turn).generate_children()
             bestScore = -999999999
 
             for i in range(len(children)):
                 # Hitung objective function SETELAH gerak
                 if newSquare[i]:
-                    score, _ = MinimaxBot.minimax(children[i], False, depth-1, alpha, beta)
-                else:
                     score, _ = MinimaxBot.minimax(children[i], True, depth-1, alpha, beta)
+                else:
+                    score, _ = MinimaxBot.minimax(children[i], False, depth-1, alpha, beta)
                 if score>=bestScore:
                     bestScore = int(max(bestScore, score))
                     bestMove = moves[i]
                 alpha = max(alpha, score)
                 if beta<=alpha:
                     break
-        else:
-            # Giliran agent
+        else: # INI MINIMIZING YA?
+            # Giliran Player1
             children, moves, newSquare = ChildrenNode(state, turn).generate_children()
             bestScore = 999999999
 
             for i in range(len(children)):
                 # Hitung objective function SETELAH gerak
                 if newSquare[i]:
-                    score, _ = MinimaxBot.minimax(children[i], True, depth-1, alpha, beta)
-                else:
                     score, _ = MinimaxBot.minimax(children[i], False, depth-1, alpha, beta)
+                else:
+                    score, _ = MinimaxBot.minimax(children[i], True, depth-1, alpha, beta)
                 if score<=bestScore:
                     bestScore = int(min(bestScore, score))
                     bestMove = moves[i]

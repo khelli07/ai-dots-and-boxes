@@ -45,7 +45,7 @@ class GameState:
     def state_value(self, player=2):
 
         # WEIGHT
-        c1 = 10
+        c1 = 25
         c2 = 10
 
         # ALGORITHM

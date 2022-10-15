@@ -1,21 +1,20 @@
 from src.GameState import GameState
-
-""" class LocalSearch():
+from src.RandomBot import RandomBot
+from src.SquareNode import SquareNode
+from src.Bot import Bot
+class LocalSearch(Bot):
     def beamSearch(Node):
         Found = False
-        listSuccessor = []
-        if(not findSuccessor(Node)):
-            Found = True
-        else:
-            listSuccessor = findSuccessor(Node)
-        while(!Found):
-            listSuccessor.sort()
-            someListSuccessor = listSuccessor[:min(4,len(listSuccessor))]
+        listSuccessor = SquareNode.generate_children()
+        print(listSuccessor)
+        while(not Found):
+            listValueListSuccessor = sorted(listSuccessor, key=lambda x: x.board_status, reverse=True)
+            someListSuccessor = listValueListSuccessor[:min(4,len(listSuccessor))]
             listSuccessor = []
             for i in someListSuccessor:
-                if score(i) === 0:
+                if i.board_status == 0:
                     Found = True
                 else:
-                    tempSuccessor = findSuccessor(i)
+                    tempSuccessor = SquareNode.generate_square_moves(i)
                     listSuccessor.append(tempSuccessor)
-        return Found """
+        return Found

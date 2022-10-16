@@ -8,8 +8,12 @@ MAX_SCORE = 1000000
 
 
 class MinimaxBot(Bot):
-    def get_action(self, state: GameState, player=2) -> GameAction:
-        turn = True if (player == 2) else False
+    def __init__(self,player = 2):
+        self.player = player
+        
+    def get_action(self, state: GameState) -> GameAction:
+        turn = True if self.player == 2 else 1
+        #INI BIAR DIA KALAU INITNYA 2 SEBAGAI PLAYER 2 --> MAX, KALAU INIT SBG PLAYER 1 --> MIN
 
         score, action, child = MinimaxBot.minimax(state, turn, 4, -MAX_SCORE, MAX_SCORE)
         print("EKSPEKTASI ANAK TERBAIK:")

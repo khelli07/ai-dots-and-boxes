@@ -11,7 +11,7 @@ class LocalSearchBSBot(Bot):
         print()
         print("============================")
         print()
-        score, action, child = LocalSearchBSBot.minimax(state, Turn, 5, -999999999, 99999999, 5)
+        score, action, child = LocalSearchBSBot.minimax(state, Turn, 5, 5)
         print("EKSPEKTASI ANAK TERBAIK:")
         print("SCORE",score)
         print("AKSI", action)
@@ -19,7 +19,7 @@ class LocalSearchBSBot(Bot):
         return action
 
     @staticmethod
-    def minimax(state: GameState, turn: bool, depth: int, alpha: int, beta:int, maks_anak: int) -> tuple[int, GameAction]:
+    def minimax(state: GameState, turn: bool, depth: int, maks_anak: int) -> tuple[int, GameAction]:
         if depth == 0 or state.terminal_test()==True:
             return (state.state_value(),GameAction("row", (-1,-1)),state)
         
@@ -40,16 +40,13 @@ class LocalSearchBSBot(Bot):
                 # temp = root.generate_best_child()
                 # score, _ = MinimaxBot.minimax(temp, False, depth-1, alpha, beta)
                 if kamus[children[i]][1]:
-                    score, _ , a = LocalSearchBSBot.minimax(children[i], True, depth-1, alpha, beta, maks_anak)
+                    score, _ , a = LocalSearchBSBot.minimax(children[i], True, depth-1, maks_anak)
                 else:
-                    score, _, a = LocalSearchBSBot.minimax(children[i], False, depth-1, alpha, beta, maks_anak)
+                    score, _, a = LocalSearchBSBot.minimax(children[i], False, depth-1, maks_anak)
                 if score>=bestScore:
                     bestScore = int(max(bestScore, score))
                     bestMove = kamus[children[i]][0]
                     bestChild = a
-                alpha = max(alpha, score)
-                if beta <= alpha:
-                    break
         else: 
             children, moves, newSquare = ChildrenNode(state, turn).generate_children(1)
             kamus = {}
@@ -65,15 +62,12 @@ class LocalSearchBSBot(Bot):
                 # temp = root.generate_best_child()
                 # score, _ = MinimaxBot.minimax(temp, False, depth-1, alpha, beta)
                 if kamus[children[i]][1]:
-                    score, _ , a= LocalSearchBSBot.minimax(children[i], False, depth-1, alpha, beta, maks_anak)
+                    score, _ , a= LocalSearchBSBot.minimax(children[i], False, depth-1, maks_anak)
                 else:
-                    score, _, a = LocalSearchBSBot.minimax(children[i], True, depth-1, alpha, beta, maks_anak)
+                    score, _, a = LocalSearchBSBot.minimax(children[i], True, depth-1, maks_anak)
                 if score<=bestScore:
                     bestScore = int(min(bestScore, score))
                     bestMove = kamus[children[i]][0]
                     bestChild = a
-                beta = min(beta, score)
-                if beta <= alpha:
-                    break
         
         return (bestScore, bestMove, bestChild)

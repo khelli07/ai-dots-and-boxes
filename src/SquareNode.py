@@ -18,7 +18,6 @@ class SquareNode(Node):
     # aku mencoba mensinkronkan sama statevalue dan minimax biar ga ketuker,
     # jadinya isEnemy = player2 yang menangnya kalau semakin positif, player1 menangnya kalo semakin negatif
     def generate_best_child(self):
-        is_enemy = not self.player1_turn
         last_best = best_child = SquareNode.generate_square_moves(self)
         if last_best.children:
             max_score, best_child = (
@@ -27,7 +26,7 @@ class SquareNode(Node):
             )
             for child in last_best.children:
                 score = child.state_value()
-                if is_enemy:
+                if not self.player1_turn:
                     if score > max_score:
                         max_score = score
                         best_child = child
@@ -44,8 +43,8 @@ class SquareNode(Node):
         Recursive function to get every square possible
         """
         new_square = node.generate_children()
-        # print(new_square)
-        if new_square:
+        print(new_square)
+        if new_square and node.children:
             return SquareNode.generate_square_moves(node.children[0])
         else:
             return node
@@ -67,8 +66,10 @@ class SquareNode(Node):
                         self.col_status.copy(),
                         GameAction("row", (i, j)),
                         self,
+                        not self.player1_turn
                     )
                     has_new_square = new_row.update(i, j, True)
+                    self.new_square.append(has_new_square)
                     if has_new_square:
                         self.children.append(new_row)
                         return True
@@ -82,9 +83,11 @@ class SquareNode(Node):
                         self.col_status.copy(),
                         GameAction("col", (j, i)),
                         self,
+                        not self.player1_turn
                     )
 
                     has_new_square = new_col.update(j, i, False)
+                    self.new_square.append(has_new_square)
                     if has_new_square:
                         self.children.append(new_col)
                         return True

@@ -10,15 +10,16 @@ class Node(GameState):
         board_status,
         row_status,
         col_status,
-        move: GameAction,
+        move,
         parent=None,
         player1_turn=True,
     ):
         super().__init__(board_status, row_status, col_status, player1_turn)
         self.parent = parent
         self.children: typing.List[Node] = []
+        self.new_square: typing.List[bool] = []
         if parent is None:
-            self.moves = [move]
+            self.moves = []
         else:
             self.moves = parent.moves + [move]
 
@@ -32,9 +33,11 @@ class Node(GameState):
                         self.col_status.copy(),
                         GameAction("row", (i, j)),
                         self,
+                        not self.player1_turn
                     )
-                    new_row.update(i, j, True)
+                    has_square = new_row.update(i, j, True)
                     self.children.append(new_row)
+                    self.new_square.append(has_square)
 
                 if self.col_status[i][j] != 1:
                     new_col = Node(
@@ -43,9 +46,11 @@ class Node(GameState):
                         self.col_status.copy(),
                         GameAction("col", (j, i)),
                         self,
+                        not self.player1_turn
                     )
-                    new_col.update(j, i, False)
+                    has_square = new_col.update(j, i, False)
                     self.children.append(new_col)
+                    self.new_square.append(has_square)
 
         return self.children != []
 

@@ -6,10 +6,9 @@ from src.SquareNode import SquareNode
 
 class MinimaxBot(Bot):
     def get_action(self, state: GameState, player=2) -> GameAction:
-        # TODO gimana cara masukin agent sebagai player berapa
-        Turn = True if player == 2 else False
+        turn = True if (player == 2 and state.player1_turn==False) or (player==1 and state.player1_turn==True) else False
         
-        score, action, child = MinimaxBot.minimax(state, Turn, 5, -999999999, 99999999)
+        score, action, child = MinimaxBot.minimax(state, turn, 5, -999999999, 99999999)
         print("EKSPEKTASI ANAK TERBAIK:")
         print("SCORE",score)
         print("STATENYA\n",child.board_status)
@@ -17,12 +16,13 @@ class MinimaxBot(Bot):
         return action
 
     @staticmethod
-    def minimax(state: GameState, turn: bool, depth: int, alpha: int, beta:int) -> tuple[int, GameAction]:
+    def minimax(state: GameState, turn: bool, depth: int, alpha: int, beta:int) -> tuple[int, GameAction, GameState]:
         if depth == 0 or state.terminal_test()==True:
             return (state.state_value(),GameAction("row", (-1,-1)),state)
         
         bestScore: int = -1
         bestMove: GameAction = GameAction("row", (-1,-1))
+        bestChild: GameState = state
 
         if turn==True: # BERARTI INI MAXIMIZING YA ?
             # Giliran Player 2

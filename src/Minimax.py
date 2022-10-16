@@ -1,42 +1,49 @@
 from src.Bot import Bot
 from src.GameAction import GameAction
 from src.GameState import GameState
-from src.GenerateChild import ChildrenNode
-from src.SquareNode import SquareNode
 from src.Node import Node
+from src.SquareNode import SquareNode
+
+MAX_SCORE = 1000000
+
 
 class MinimaxBot(Bot):
     def get_action(self, state: GameState, player=2) -> GameAction:
         turn = True if (player == 2) else False
-        
-        score, action, child = MinimaxBot.minimax(state, turn, 4, -999999999, 99999999)
+
+        score, action, child = MinimaxBot.minimax(state, turn, 4, -MAX_SCORE, MAX_SCORE)
         print("EKSPEKTASI ANAK TERBAIK:")
-        print("SCORE",score)
-        print("STATENYA\n",child.board_status)
+        print("SCORE", score)
+        print("STATENYA\n", child.board_status)
 
         return action
 
     @staticmethod
-    def minimax(state: GameState, turn: bool, depth: int, alpha: int, beta:int) -> tuple[int, GameAction, GameState]:
-        if depth == 0 or state.terminal_test()==True:
-            return (state.state_value(),GameAction("row", (-1,-1)),state)
-        
+    def minimax(
+        state: GameState, turn: bool, depth: int, alpha: int, beta: int
+    ) -> tuple[int, GameAction, GameState]:
+        if depth == 0 or state.terminal_test():
+            return (state.state_value(), GameAction("row", (-1, -1)), state)
+
         bestScore: int = -1
-        bestMove: GameAction = GameAction("row", (-1,-1))
+        bestMove: GameAction = GameAction("row", (-1, -1))
         bestChild: GameState = state
 
-        if turn==True: # BERARTI INI MAXIMIZING YA ?
-            # Giliran Player 2
-            # children, moves, newSquare = ChildrenNode(state, turn).generate_children(2)
-            node = Node(state.board_status, state.row_status, state.col_status, None, None, state.player1_turn) 
-            node.generate_children()
-            bestScore = -999999999
+        if turn:  # Agent's turn, maximizing
+            node = Node(
+                state.board_status,
+                state.row_status,
+                state.col_status,
+                None,
+                None,
+                state.player1_turn,
+            ).generate_children()
+            bestScore = -MAX_SCORE
             for i in range(len(node.children)):
+                child = node.children[i]
                 if node.new_square[i]:
-                    squared_best = SquareNode(state.board_status, state.row_status, state.col_status, None, None, state.player1_turn)
-                    score, _ , a = MinimaxBot.minimax(squared_best, True, depth-1, alpha, beta)
-                else:
-                    score, _, a = MinimaxBot.minimax(node.children[i], False, depth-1, alpha, beta)
+                    child = MinimaxBot.get_squared_child(state)
+                score, _, a = MinimaxBot.minimax(child, False, depth - 1, alpha, beta)
                 if score > bestScore:
                     bestScore = int(score)
                     bestMove = node.children[i].moves[-1]
@@ -44,19 +51,22 @@ class MinimaxBot(Bot):
                 alpha = max(alpha, score)
                 if beta < alpha:
                     break
-        else: # INI MINIMIZING YA?
-            # Giliran Player1
-            # children, moves, newSquare = ChildrenNode(state, turn).generate_children(1)
-            node = Node(state.board_status, state.row_status, state.col_status, None, None, state.player1_turn) 
-            node.generate_children()
-            bestScore = 999999999
+        else:
+            node = Node(
+                state.board_status,
+                state.row_status,
+                state.col_status,
+                None,
+                None,
+                state.player1_turn,
+            ).generate_children()
+            bestScore = MAX_SCORE
 
             for i in range(len(node.children)):
+                child = node.children[i]
                 if node.new_square[i]:
-                    squared_best = SquareNode(state.board_status, state.row_status, state.col_status, None, None, state.player1_turn)
-                    score, _ , a= MinimaxBot.minimax(squared_best, False, depth-1, alpha, beta)
-                else:
-                    score, _, a = MinimaxBot.minimax(node.children[i], True, depth-1, alpha, beta)
+                    child = MinimaxBot.get_squared_child(state)
+                score, _, a = MinimaxBot.minimax(child, True, depth - 1, alpha, beta)
                 if score < bestScore:
                     bestScore = int(score)
                     bestMove = node.children[i].moves[-1]
@@ -64,13 +74,16 @@ class MinimaxBot(Bot):
                 beta = min(beta, score)
                 if beta < alpha:
                     break
-        
+
         return (bestScore, bestMove, bestChild)
 
-        
-        
-        
-
-                
-
-                
+    @staticmethod
+    def get_squared_child(state):
+        return SquareNode(
+            state.board_status,
+            state.row_status,
+            state.col_status,
+            None,
+            None,
+            state.player1_turn,
+        ).generate_best_child()

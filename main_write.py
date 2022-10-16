@@ -376,5 +376,5 @@ class Dots_and_Boxes:
 
 
 if __name__ == "__main__":
-    game_instance = Dots_and_Boxes(None, RandomBot())
+    game_instance = Dots_and_Boxes(None, None)
     game_instance.mainloop()

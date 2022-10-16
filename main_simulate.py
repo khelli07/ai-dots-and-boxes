@@ -359,6 +359,9 @@ class Dots_and_Boxes:
                 grid_position
             )
             self.update(valid_input, logical_position)
+            print(self.board_status)
+            print(self.row_status)
+            print(self.col_status)
         else:
             self.canvas.delete("all")
             self.play_again()
@@ -405,6 +408,6 @@ class Dots_and_Boxes:
 
 
 if __name__ == "__main__":
-    config = "config3.txt"
-    game_instance = Dots_and_Boxes(config, None, RandomBot())
+    config = "config7.txt"
+    game_instance = Dots_and_Boxes(config, None, None)
     game_instance.mainloop()

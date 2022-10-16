@@ -7,16 +7,10 @@ class SquareNode(Node):
     Helps to return best child of a node if agent/enemy has > 1 move
     e.g. if agent/enemy made a square
 
-    Usage:
-    root = SquareNode(board_status, row_status, col_status, None)
-    best_child = root.generate_best_child(is_enemy=False)
-
     best_child will return SquareNode which has an attribute called "moves"
     "moves" will be a list of GameAction to be taken by agent/enemy to reach best_child
     """
-    # Note Saul:
-    # aku mencoba mensinkronkan sama statevalue dan minimax biar ga ketuker,
-    # jadinya isEnemy = player2 yang menangnya kalau semakin positif, player1 menangnya kalo semakin negatif
+
     def generate_best_child(self):
         last_best = best_child = SquareNode.generate_square_moves(self)
         if last_best.children:
@@ -43,7 +37,6 @@ class SquareNode(Node):
         Recursive function to get every square possible
         """
         new_square = node.generate_children()
-        print(new_square)
         if new_square and node.children:
             return SquareNode.generate_square_moves(node.children[0])
         else:
@@ -66,11 +59,12 @@ class SquareNode(Node):
                         self.col_status.copy(),
                         GameAction("row", (i, j)),
                         self,
-                        not self.player1_turn
+                        not self.player1_turn,
                     )
                     has_new_square = new_row.update(i, j, True)
                     self.new_square.append(has_new_square)
                     if has_new_square:
+                        new_row.player1_turn = self.player1_turn
                         self.children.append(new_row)
                         return True
                     else:
@@ -83,12 +77,13 @@ class SquareNode(Node):
                         self.col_status.copy(),
                         GameAction("col", (j, i)),
                         self,
-                        not self.player1_turn
+                        not self.player1_turn,
                     )
 
                     has_new_square = new_col.update(j, i, False)
                     self.new_square.append(has_new_square)
                     if has_new_square:
+                        new_col.player1_turn = self.player1_turn
                         self.children.append(new_col)
                         return True
                     else:
@@ -101,9 +96,10 @@ class SquareNode(Node):
 # import numpy as np
 
 # CASE 1: if agent can claim all square until the game ends
-# board_status = np.array([[-3, 3, -3], [-2, 3, -2], [-2, 2, 2]])
-# row_status = np.array([[1, 1, 1], [0, 0, 0], [0, 1, 0], [1, 1, 1]])
-# col_status = np.array([[1, 1, 1, 1], [1, 1, 1, 1], [1, 0, 0, 1]])
+# board_status = np.array([[0, -1, -3], [2, 2, 2], [-3, -2, -2]])
+# row_status = np.array([[0, 0, 1], [0, 0, 0], [1, 1, 0], [1, 1, 1]])
+# col_status = np.array([[0, 0, 1, 1], [1, 0, 1, 1], [1, 0, 0, 1]])
+
 
 # CASE 2: if agent can only claim several squares and the game still continues
 # board_status = np.array([[0, 1, -3], [0, -1, -2], [0, -1, 3]])
@@ -115,7 +111,7 @@ class SquareNode(Node):
 # row_status = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]])
 # col_status = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
 
-# root = SquareNode(board_status, row_status, col_status, None)
+# root = SquareNode(board_status, row_status, col_status, None, player1_turn=False)
 # best_child = root.generate_best_child()
 # print(best_child.moves)
 # print(best_child.board_status)

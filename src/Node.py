@@ -33,7 +33,7 @@ class Node(GameState):
                         self.col_status.copy(),
                         GameAction("row", (i, j)),
                         self,
-                        not self.player1_turn
+                        not self.player1_turn,
                     )
                     has_square = new_row.update(i, j, True)
                     self.children.append(new_row)
@@ -46,18 +46,18 @@ class Node(GameState):
                         self.col_status.copy(),
                         GameAction("col", (j, i)),
                         self,
-                        not self.player1_turn
+                        not self.player1_turn,
                     )
                     has_square = new_col.update(j, i, False)
                     self.children.append(new_col)
                     self.new_square.append(has_square)
 
-        return self.children != []
+        return self
 
     def update(self, x, y, is_row):
         val = 1
         playerModifier = 1
-        if self.player1_turn:
+        if not self.player1_turn:
             playerModifier = -1
 
         is_square_created = False

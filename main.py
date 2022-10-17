@@ -385,5 +385,5 @@ class Dots_and_Boxes:
 
 
 if __name__ == "__main__":
-    game_instance = Dots_and_Boxes(None, MinimaxBot())
+    game_instance = Dots_and_Boxes(None, LocalSearchBSBot(2))
     game_instance.mainloop()

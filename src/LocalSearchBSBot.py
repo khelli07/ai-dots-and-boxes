@@ -1,73 +1,103 @@
 from src.Bot import Bot
 from src.GameAction import GameAction
 from src.GameState import GameState
-from src.GenerateChild import ChildrenNode
+from src.Node import Node
 from src.SquareNode import SquareNode
 
+MAX_SCORE = 1000000
+MAKS_ANAK = 8
+
+
 class LocalSearchBSBot(Bot):
+    def __init__(self,player = 2):
+        self.player = player
+
     def get_action(self, state: GameState, player=2) -> GameAction:
-        # TODO gimana cara masukin agent sebagai player berapa
-        Turn = True if player == 2 else False
+        turn = True if self.player == 2 else False
         print()
-        print("============================")
+        print("==========================")
         print()
-        score, action, child = LocalSearchBSBot.minimax(state, Turn, 5, 5)
+        score, action, child = LocalSearchBSBot.minimax(state, turn, 3, MAKS_ANAK)
         print("EKSPEKTASI ANAK TERBAIK:")
-        print("SCORE",score)
-        print("AKSI", action)
-        print("STATENYA\n",child.board_status)
+        print("SCORE", score)
+        print("STATENYA\n", child.board_status)
+        print("ACTION", action)
+
         return action
 
     @staticmethod
-    def minimax(state: GameState, turn: bool, depth: int, maks_anak: int) -> tuple[int, GameAction]:
-        if depth == 0 or state.terminal_test()==True:
-            return (state.state_value(),GameAction("row", (-1,-1)),state)
+    def minimax(
+        state: GameState, turn: bool, depth: int, maks_anak: int
+    ) -> tuple[int, GameAction, GameState]:
+        if depth == 0 or state.terminal_test():
+            return (state.state_value(), GameAction("row", (-1, -1)), state)
         
         bestScore: int = -1
-        bestMove: GameAction = GameAction("row", (-1,-1))
-        kamus = {}
-        if turn==True: 
-            children, moves, newSquare = ChildrenNode(state, turn).generate_children(2)
-            kamus = {}
-            for i in range(len(children)):
-                kamus[children[i]] = [moves[i], newSquare[i]]
-            children = sorted(children, key=lambda x: x.state_value(), reverse=True)
-            children = children[:min(maks_anak,len(children))]
-            bestScore = -999999999
-            for i in range(len(children)):
-                # Ini kalau mau sinkron khelli
-                # root = SquareNode(children[i].board_status, children[i].row_status, children[i].col_status, None)
-                # temp = root.generate_best_child()
-                # score, _ = MinimaxBot.minimax(temp, False, depth-1, alpha, beta)
-                if kamus[children[i]][1]:
-                    score, _ , a = LocalSearchBSBot.minimax(children[i], True, depth-1, maks_anak)
-                else:
-                    score, _, a = LocalSearchBSBot.minimax(children[i], False, depth-1, maks_anak)
-                if score>=bestScore:
-                    bestScore = int(max(bestScore, score))
-                    bestMove = kamus[children[i]][0]
-                    bestChild = a
-        else: 
-            children, moves, newSquare = ChildrenNode(state, turn).generate_children(1)
-            kamus = {}
-            for i in range(len(children)):
-                kamus[children[i]] = [moves[i], newSquare[i]]
-            bestScore = 999999999
-            children = sorted(children, key=lambda x: x.state_value(), reverse=False)
-            children = children[:min(maks_anak,len(children))]
+        bestMove: GameAction = GameAction("row", (-1, -1))
+        bestChild: GameState = state
 
-            for i in range(len(children)):
-                # Ini kalau mau sinkron khelli
-                # root = SquareNode(children[i].board_status, children[i].row_status, children[i].col_status, None)
-                # temp = root.generate_best_child()
-                # score, _ = MinimaxBot.minimax(temp, False, depth-1, alpha, beta)
-                if kamus[children[i]][1]:
-                    score, _ , a= LocalSearchBSBot.minimax(children[i], False, depth-1, maks_anak)
-                else:
-                    score, _, a = LocalSearchBSBot.minimax(children[i], True, depth-1, maks_anak)
-                if score<=bestScore:
-                    bestScore = int(min(bestScore, score))
-                    bestMove = kamus[children[i]][0]
+        if turn:  # Agent's turn, maximizing
+            node = Node(
+                state.board_status,
+                state.row_status,
+                state.col_status,
+                None,
+                None,
+                state.player1_turn,
+            ).generate_children()
+            bestScore = -MAX_SCORE
+            temp = node.children
+            anak_terurut = sorted(temp, key=lambda x: x.state_value(), reverse=True)
+            node.children = anak_terurut[:min(maks_anak,len(anak_terurut))]
+            
+            for i in range(len(node.children)):
+                child = node.children[i]
+                if(depth >= 2):
+                    print("DEPTH: ", depth)
+                    print(child.board_status)
+                    print(child.moves[-1])
+                if node.new_square[i]:
+                    child = LocalSearchBSBot.get_squared_child(state)
+                score, _, a = LocalSearchBSBot.minimax(child, False, depth - 1, MAKS_ANAK)
+                if score > bestScore:
+                    if(depth >= 2):
+                        print(score, bestScore)
+                    bestScore = int(score)
+                    bestMove = node.children[i].moves[-1]
                     bestChild = a
-        
+        else:
+            node = Node(
+                state.board_status,
+                state.row_status,
+                state.col_status,
+                None,
+                None,
+                state.player1_turn,
+            ).generate_children()
+            bestScore = MAX_SCORE
+            temp = node.children
+            anak_terurut = sorted(temp, key=lambda x: x.state_value(), reverse=False)
+            node.children = anak_terurut[:min(maks_anak,len(anak_terurut))]
+            
+            for i in range(len(node.children)):
+                child = node.children[i]
+                if node.new_square[i]:
+                    child = LocalSearchBSBot.get_squared_child(state)
+                score, _, a = LocalSearchBSBot.minimax(child, True, depth - 1, MAKS_ANAK)
+                if score < bestScore:
+                    bestScore = int(score)
+                    bestMove = node.children[i].moves[-1]
+                    bestChild = a
+
         return (bestScore, bestMove, bestChild)
+
+    @staticmethod
+    def get_squared_child(state):
+        return SquareNode(
+            state.board_status,
+            state.row_status,
+            state.col_status,
+            None,
+            None,
+            state.player1_turn,
+        ).generate_best_child()

@@ -12,7 +12,7 @@ class MinimaxBot(Bot):
         self.player = player
         
     def get_action(self, state: GameState) -> GameAction:
-        turn = True if self.player == 2 else 1
+        turn = True if self.player == 2 else False
         #INI BIAR DIA KALAU INITNYA 2 SEBAGAI PLAYER 2 --> MAX, KALAU INIT SBG PLAYER 1 --> MIN
 
         score, action, child = MinimaxBot.minimax(state, turn, 4, -MAX_SCORE, MAX_SCORE)

@@ -87,3 +87,38 @@ class Node(GameState):
                     is_square_created = True
 
         return is_square_created
+
+    def state_value(self):
+        """
+        Note : Positif --> Membantu player 2, Negatif --> Membantu player 1
+        """
+            
+        # WEIGHT
+        c1 = 100
+        c2 = 10
+
+        # ALGORITHM
+        red_square = 0
+        blue_square = 0
+        almost_square = 0
+        for i in self.board_status:
+            for j in i:
+                if abs(j) == 3:
+                    almost_square += 1
+                elif j == 4:
+                    red_square += 1
+                elif j == -4:
+                    blue_square += 1
+
+        square_score = c1 * (red_square - blue_square)
+        almost_score = c2 * almost_square
+
+        result = square_score + almost_score if not self.player1_turn else square_score - almost_score
+        return result
+
+    def terminal_test(self) -> bool:
+        for i in self.board_status:
+            for j in i:
+                if abs(j) != 4:
+                    return False
+        return True

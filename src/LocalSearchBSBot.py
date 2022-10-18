@@ -29,22 +29,23 @@ class LocalSearchBSBot(Bot):
     def minimax(
         state: GameState, turn: bool, depth: int, maks_anak: int
     ) -> tuple[int, GameAction, GameState]:
-        if depth == 0 or state.terminal_test():
-            return (state.state_value(), GameAction("row", (-1, -1)), state)
+        node = Node(
+            state.board_status,
+            state.row_status,
+            state.col_status,
+            None,
+            None,
+            state.player1_turn,
+        )
+        if depth == 0 or node.terminal_test():
+            return (node.state_value(), GameAction("row", (-1, -1)), state)
         
         bestScore: int = -1
         bestMove: GameAction = GameAction("row", (-1, -1))
         bestChild: GameState = state
 
         if turn:  # Agent's turn, maximizing
-            node = Node(
-                state.board_status,
-                state.row_status,
-                state.col_status,
-                None,
-                None,
-                state.player1_turn,
-            ).generate_children()
+            node = node.generate_children()
             bestScore = -MAX_SCORE
             temp = node.children
             anak_terurut = sorted(temp, key=lambda x: x.state_value(), reverse=True)
@@ -66,14 +67,7 @@ class LocalSearchBSBot(Bot):
                     bestMove = node.children[i].moves[-1]
                     bestChild = a
         else:
-            node = Node(
-                state.board_status,
-                state.row_status,
-                state.col_status,
-                None,
-                None,
-                state.player1_turn,
-            ).generate_children()
+            node = node.generate_children()
             bestScore = MAX_SCORE
             temp = node.children
             anak_terurut = sorted(temp, key=lambda x: x.state_value(), reverse=False)

@@ -21,10 +21,15 @@ class LocalSearchHCBot(Bot):
         print("INI STATE MULA-MULA")
         print(state.board_status)
         for i in range(len(children)):
-            print("LANGKAH YANG MUNGKIN UNTUK CHILDREN KE-", i)
-            print(children[i].board_status)
-            print(children[i].state_value())
-            if(temp_value < children[i].state_value()):
-                temp_value = children[i].state_value()
+            node = Node(
+                children[i].board_status,
+                children[i].row_status,
+                children[i].col_status,
+                moves[i],
+                state,
+                children[i].player1_turn,
+            )
+            if(temp_value < node.state_value()):
+                temp_value = node.state_value()
                 index = i 
         return moves[index]
